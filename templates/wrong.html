@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}错题集 - ICT刷题系统{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>❌ 错题集</h1>
+    <p>共 {{ questions|length }} 道错题</p>
+</div>
+
+{% if questions %}
+<div class="action-bar">
+    <a href="/quiz?mode=wrong&count=20" class="btn btn-primary">🔄 重做错题</a>
+</div>
+
+<div class="question-list">
+    {% for q in questions %}
+    <div class="question-item">
+        <div class="question-item-header">
+            <span class="badge badge-category">{{ q.category }}</span>
+            <span class="badge badge-wrong">错 {{ q.wrong_count }} 次</span>
+            {% if q.correct_streak > 0 %}
+            <span class="badge badge-streak">连对 {{ q.correct_streak }} 次</span>
+            {% endif %}
+        </div>
+        <div class="question-item-content">
+            <p><strong>题目：</strong>{{ q.content }}</p>
+            {% if q.option_a %}
+            <div class="options-preview">
+                <span>A. {{ q.option_a }}</span>
+                <span>B. {{ q.option_b }}</span>
+                <span>C. {{ q.option_c }}</span>
+                <span>D. {{ q.option_d }}</span>
+            </div>
+            {% endif %}
+            <p><strong>正确答案：</strong><span class="correct">{{ q.answer }}</span></p>
+            {% if q.explanation %}
+            <details>
+                <summary>📖 查看解析</summary>
+                <p>{{ q.explanation }}</p>
+            </details>
+            {% endif %}
+        </div>
+        <div class="question-item-actions">
+            <button class="btn btn-sm btn-secondary" 
+                    onclick="removeWrong({{ q.id }})">🗑️ 移出错题集</button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <h2>🎉 错题集为空！</h2>
+    <p>太棒了，继续保持！</p>
+    <a href="/" class="btn btn-primary">返回首页</a>
+</div>
+{% endif %}
+
+<script>
+function removeWrong(questionId) {
+    if (!confirm('确定移出错题集吗？')) return;
+    
+    fetch('/api/remove_wrong', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({question_id: questionId})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+</script>
+{% endblock %}

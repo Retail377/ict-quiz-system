@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}收藏夹 - ICT刷题系统{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>⭐ 收藏夹</h1>
+    <p>共 {{ questions|length }} 道收藏题</p>
+</div>
+
+{% if questions %}
+<div class="action-bar">
+    <a href="/quiz?mode=favorite&count=20" class="btn btn-primary">🔄 重做收藏题</a>
+</div>
+
+<div class="question-list">
+    {% for q in questions %}
+    <div class="question-item">
+        <div class="question-item-header">
+            <span class="badge badge-category">{{ q.category }}</span>
+            {% if q.tags %}
+            <span class="badge badge-tag">{{ q.tags }}</span>
+            {% endif %}
+            <span class="badge badge-time">{{ q.fav_time[:10] }}</span>
+        </div>
+        <div class="question-item-content">
+            <p><strong>题目：</strong>{{ q.content }}</p>
+            {% if q.option_a %}
+            <div class="options-preview">
+                <span>A. {{ q.option_a }}</span>
+                <span>B. {{ q.option_b }}</span>
+                <span>C. {{ q.option_c }}</span>
+                <span>D. {{ q.option_d }}</span>
+            </div>
+            {% endif %}
+            <p><strong>正确答案：</strong><span class="correct">{{ q.answer }}</span></p>
+            {% if q.explanation %}
+            <details>
+                <summary>📖 查看解析</summary>
+                <p>{{ q.explanation }}</p>
+            </details>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <h2>⭐ 收藏夹为空</h2>
+    <p>刷题时点击"收藏"按钮即可添加</p>
+    <a href="/" class="btn btn-primary">开始刷题</a>
+</div>
+{% endif %}
+{% endblock %}

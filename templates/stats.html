@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}学习统计 - ICT刷题系统{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>📊 学习统计</h1>
+</div>
+
+<!-- 概览卡片 -->
+<div class="stats-overview">
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.total_questions }}</div>
+        <div class="stat-label">总答题数</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.correct_questions }}</div>
+        <div class="stat-label">正确数</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ "%.1f"|format(stats.accuracy) }}%</div>
+        <div class="stat-label">正确率</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.check_in_days }}</div>
+        <div class="stat-label">打卡天数</div>
+    </div>
+</div>
+
+<!-- 图表区域 -->
+<div class="charts-grid">
+    <div class="chart-container">
+        <h3>📈 近30天答题趋势</h3>
+        <div id="dailyChart" style="height: 300px;"></div>
+    </div>
+    <div class="chart-container">
+        <h3>🎯 各考点正确率</h3>
+        <div id="categoryChart" style="height: 300px;"></div>
+    </div>
+</div>
+
+<div class="chart-container">
+    <h3>📊 各考点答题分布</h3>
+    <div id="categoryBarChart" style="height: 400px;"></div>
+</div>
+
+<script>
+const dailyData = {{ daily_stats|safe }};
+const categoryData = {{ stats.by_category|tojson }};
+
+// 近30天答题趋势
+const dailyChart = echarts.init(document.getElementById('dailyChart'));
+dailyChart.setOption({
+    tooltip: { trigger: 'axis' },
+    legend: { data: ['答题数', '正确数'] },
+    xAxis: {
+        type: 'category',
+        data: dailyData.map(d => d.date)
+    },
+    yAxis: { type: 'value' },
+    series: [
+        {
+            name: '答题数',
+            type: 'line',
+            data: dailyData.map(d => d.total),
+            smooth: true,
+            itemStyle: { color: '#409EFF' }
+        },
+        {
+            name: '正确数',
+            type: 'line',
+            data: dailyData.map(d => d.correct),
+            smooth: true,
+            itemStyle: { color: '#67C23A' }
+        }
+    ]
+});
+
+// 各考点正确率雷达图
+const categoryChart = echarts.init(document.getElementById('categoryChart'));
+categoryChart.setOption({
+    tooltip: {},
+    radar: {
+        indicator: categoryData.map(c => ({
+            name: c.category,
+            max: 100
+        }))
+    },
+    series: [{
+        type: 'radar',
+        data: [{
+            value: categoryData.map(c => 
+                c.total ? (c.correct / c.total * 100).toFixed(1) : 0
+            ),
+            name: '正确率(%)',
+            areaStyle: { color: 'rgba(64, 158, 255, 0.3)' },
+            lineStyle: { color: '#409EFF' }
+        }]
+    }]
+});
+
+// 各考点答题分布柱状图
+const categoryBarChart = echarts.init(document.getElementById('categoryBarChart'));
+categoryBarChart.setOption({
+    tooltip: { trigger: 'axis' },
+    legend: { data: ['总题数', '正确数', '错误数'] },
+    xAxis: {
+        type: 'category',
+        data: categoryData.map(c => c.category),
+        axisLabel: { rotate: 30 }
+    },
+    yAxis: { type: 'value' },
+    series: [
+        {
+            name: '总题数',
+            type: 'bar',
+            data: categoryData.map(c => c.total),
+            itemStyle: { color: '#409EFF' }
+        },
+        {
+            name: '正确数',
+            type: 'bar',
+            data: categoryData.map(c => c.correct),
+            itemStyle: { color: '#67C23A' }
+        },
+        {
+            name: '错误数',
+            type: 'bar',
+            data: categoryData.map(c => c.total - c.correct),
+            itemStyle: { color: '#F56C6C' }
+        }
+    ]
+});
+
+// 响应式
+window.addEventListener('resize', () => {
+    dailyChart.resize();
+    categoryChart.resize();
+    categoryBarChart.resize();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- ============================================ -->
+    <!-- 移动端适配（必须）                            -->
+    <!-- ============================================ -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <!-- ============================================ -->
+    <!-- 基础SEO信息                                   -->
+    <!-- ============================================ -->
+    <title>{% block title %}ICT网络赛道刷题系统{% endblock %}</title>
+    <meta name="description" content="ICT网络赛道刷题系统，覆盖无线、安全、网络、VLAN、数通五大考点，支持随机刷题、错题集、收藏夹、学习统计">
+    <meta name="keywords" content="ICT,网络赛道,刷题,华为认证,HCIA,HCIP,HCIE,无线,安全,网络">
+    <meta name="author" content="ICT Quiz System">
+
+    <!-- ============================================ -->
+    <!-- PWA 核心配置（必须）                          -->
+    <!-- ============================================ -->
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/static/manifest.json">
+
+    <!-- 主题色（浏览器地址栏颜色） -->
+    <meta name="theme-color" content="#667eea">
+
+    <!-- ============================================ -->
+    <!-- iOS Safari 专用（添加到主屏幕）               -->
+    <!-- ============================================ -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ICT刷题">
+
+    <!-- iOS 图标（不同尺寸） -->
+    <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/static/icons/icon-192.png">
+
+    <!-- iOS 启动画面（可选，提升体验） -->
+    <link rel="apple-touch-startup-image" href="/static/icons/icon-512.png">
+
+    <!-- ============================================ -->
+    <!-- Android / 通用图标                            -->
+    <!-- ============================================ -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/icon-192.png">
+    <link rel="shortcut icon" href="/static/icons/icon-192.png">
+
+    <!-- ============================================ -->
+    <!-- Windows 磁贴（可选）                          -->
+    <!-- ============================================ -->
+    <meta name="msapplication-TileColor" content="#667eea">
+    <meta name="msapplication-TileImage" content="/static/icons/icon-192.png">
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <!-- ============================================ -->
+    <!-- 样式表                                        -->
+    <!-- ============================================ -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- ============================================ -->
+    <!-- 第三方库：ECharts（图表）                     -->
+    <!-- ============================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+    <!-- ============================================ -->
+    <!-- 内联样式（针对PWA和移动端优化）               -->
+    <!-- ============================================ -->
+    <style>
+        /* 防止iOS点击高亮 */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
+        /* PWA独立模式下隐藏不必要的元素 */
+        @media (display-mode: standalone) {
+            /* 在PWA模式下，可以隐藏某些提示 */
+            .install-prompt {
+                display: none !important;
+            }
+        }
+
+        /* 安全区域适配（iPhone X及以上刘海屏） */
+        body {
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* 平滑滚动 */
+        html {
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+
+        /* 防止双击缩放 */
+        button, .btn, .option {
+            touch-action: manipulation;
+        }
+
+        /* 加载动画 */
+        .pwa-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+
+        .pwa-loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .pwa-loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 离线提示 */
+        .offline-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #f56c6c;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 14px;
+            z-index: 10000;
+            transform: translateY(-100%);
+            transition: transform 0.3s;
+        }
+
+        .offline-banner.show {
+            transform: translateY(0);
+        }
+
+        /* 安装提示横幅 */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 9998;
+            animation: slideUp 0.3s ease;
+        }
+
+        .install-prompt.show {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .install-prompt-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .install-prompt-text {
+            flex: 1;
+        }
+
+        .install-prompt-text h4 {
+            font-size: 15px;
+            margin-bottom: 3px;
+            color: #333;
+        }
+
+        .install-prompt-text p {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .install-prompt-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .install-prompt-actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .install-prompt-actions .btn-install {
+            background: #667eea;
+            color: white;
+        }
+
+        .install-prompt-actions .btn-install:hover {
+            background: #5568d3;
+        }
+
+        .install-prompt-actions .btn-later {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .install-prompt-actions .btn-later:hover {
+            background: #e0e0e0;
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- ============================================ -->
+    <!-- 离线提示横幅                                  -->
+    <!-- ============================================ -->
+    <div class="offline-banner" id="offlineBanner">
+        📡 网络已断开，部分功能不可用
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 顶部导航栏                                    -->
+    <!-- ============================================ -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">📚 ICT刷题大师</a>
+            <ul class="nav-menu">
+                <li><a href="/">🏠 首页</a></li>
+                <li><a href="/quiz?mode=random&count=10">🎲 随机刷题</a></li>
+                <li><a href="/wrong">❌ 错题集</a></li>
+                <li><a href="/favorites">⭐ 收藏夹</a></li>
+                <li><a href="/stats">📊 学习统计</a></li>
+                <li><a href="/calendar">📅 打卡日历</a></li>
+                <li><a href="#" onclick="showUpload(); return false;">📄 导入PDF</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- 主内容区                                      -->
+    <!-- ============================================ -->
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- ============================================ -->
+    <!-- PDF上传弹窗                                   -->
+    <!-- ============================================ -->
+    <div id="uploadModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close" onclick="hideUpload()">&times;</span>
+            <h2>📄 导入PDF题库</h2>
+            <p>支持格式：<code>题目编号. 题目内容 A. 选项 B. 选项 C. 选项 D. 选项 正确答案:X 解析:...</code></p>
+            <input type="file" id="pdfFile" accept=".pdf">
+            <button onclick="uploadPDF()" class="btn btn-primary">开始导入</button>
+            <div id="uploadResult"></div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- PWA 安装提示横幅                              -->
+    <!-- ============================================ -->
+    <div class="install-prompt" id="installPrompt">
+        <img src="/static/icons/icon-192.png" alt="ICT刷题" class="install-prompt-icon">
+        <div class="install-prompt-text">
+            <h4>安装 ICT刷题系统</h4>
+            <p>添加到桌面，随时随地刷题</p>
+        </div>
+        <div class="install-prompt-actions">
+            <button class="btn-later" onclick="dismissInstallPrompt()">以后</button>
+            <button class="btn-install" onclick="installPWA()">安装</button>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- JavaScript                                    -->
+    <!-- ============================================ -->
+
+    <!-- 1. PWA Service Worker 注册 -->
+    <script>
+        // 注册 Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js', {
+                    scope: '/'
+                })
+                .then(function(registration) {
+                    console.log('✅ Service Worker 注册成功:', registration.scope);
+
+                    // 检查更新
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        console.log('🔄 发现新版本，正在更新...');
+
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('✅ 新版本已就绪，刷新后生效');
+                                // 可以在这里提示用户刷新
+                            }
+                        });
+                    });
+                })
+                .catch(function(error) {
+                    console.log('❌ Service Worker 注册失败:', error);
+                });
+            });
+        }
+    </script>
+
+    <!-- 2. PWA 安装提示逻辑 -->
+    <script>
+        let deferredPrompt = null;
+
+        // 监听 beforeinstallprompt 事件
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // 阻止默认的安装提示
+            e.preventDefault();
+            // 保存事件，稍后触发
+            deferredPrompt = e;
+            console.log('💡 PWA 可安装');
+
+            // 检查是否已经被用户关闭过
+            const dismissed = localStorage.getItem('pwa-install-dismissed');
+            const dismissedTime = dismissed ? parseInt(dismissed) : 0;
+            const now = Date.now();
+            const oneDay = 24 * 60 * 60 * 1000; // 1天
+
+            // 如果用户1天内没有关闭过，显示安装提示
+            if (now - dismissedTime > oneDay) {
+                setTimeout(() => {
+                    document.getElementById('installPrompt').classList.add('show');
+                }, 3000); // 3秒后显示
+            }
+        });
+
+        // 点击安装按钮
+        function installPWA() {
+            if (!deferredPrompt) {
+                console.log('⚠️ 安装提示不可用');
+                return;
+            }
+
+            // 显示安装提示
+            deferredPrompt.prompt();
+
+            // 等待用户选择
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('✅ 用户接受安装');
+                } else {
+                    console.log('❌ 用户拒绝安装');
+                }
+                deferredPrompt = null;
+                document.getElementById('installPrompt').classList.remove('show');
+            });
+        }
+
+        // 关闭安装提示
+        function dismissInstallPrompt() {
+            document.getElementById('installPrompt').classList.remove('show');
+            // 记录关闭时间，1天内不再显示
+            localStorage.setItem('pwa-install-dismissed', Date.now().toString());
+        }
+
+        // 监听安装完成
+        window.addEventListener('appinstalled', (e) => {
+            console.log('🎉 PWA 安装成功');
+            document.getElementById('installPrompt').classList.remove('show');
+        });
+
+        // 检测是否在PWA模式下运行
+        if (window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true) {
+            console.log('📱 当前在PWA独立模式下运行');
+            document.body.classList.add('pwa-standalone');
+        }
+    </script>
+
+    <!-- 3. 网络状态监听 -->
+    <script>
+        const offlineBanner = document.getElementById('offlineBanner');
+
+        function updateOnlineStatus() {
+            if (navigator.onLine) {
+                offlineBanner.classList.remove('show');
+                console.log('🌐 网络已连接');
+            } else {
+                offlineBanner.classList.add('show');
+                console.log('📡 网络已断开');
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        // 初始化时检查
+        updateOnlineStatus();
+    </script>
+
+    <!-- 4. PDF上传功能 -->
+    <script>
+        function showUpload() {
+            document.getElementById('uploadModal').style.display = 'block';
+        }
+
+        function hideUpload() {
+            document.getElementById('uploadModal').style.display = 'none';
+        }
+
+        function uploadPDF() {
+            const fileInput = document.getElementById('pdfFile');
+            if (!fileInput.files.length) {
+                alert('请选择PDF文件');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            document.getElementById('uploadResult').innerHTML = '⏳ 正在解析...';
+
+            fetch('/api/upload_pdf', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('uploadResult').innerHTML =
+                        `<p style="color:green;">✅ ${data.message}</p>`;
+                } else {
+                    document.getElementById('uploadResult').innerHTML =
+                        `<p style="color:red;">❌ ${data.error}</p>`;
+                }
+            })
+            .catch(err => {
+                document.getElementById('uploadResult').innerHTML =
+                    `<p style="color:red;">❌ 上传失败: ${err}</p>`;
+            });
+        }
+
+        // 点击弹窗外部关闭
+        document.getElementById('uploadModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideUpload();
+            }
+        });
+    </script>
+
+    <!-- 5. 通用工具函数 -->
+    <script>
+        // 显示Toast提示
+        function showToast(message, duration = 2000) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0,0,0,0.8);
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 14px;
+                z-index: 99999;
+                animation: fadeIn 0.3s;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // 防抖函数
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // 节流函数
+        function throttle(func, limit) {
+            let inThrottle;
+            return function(...args) {
+                if (!inThrottle) {
+                    func.apply(this, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
+    </script>
+
+    <!-- 6. 页面加载完成后隐藏loading -->
+    <script>
+        window.addEventListener('load', function() {
+            const loading = document.querySelector('.pwa-loading');
+            if (loading) {
+                loading.classList.add('hidden');
+                setTimeout(() => loading.remove(), 500);
+            }
+        });
+    </script>
+
+    {% block extra_script %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}打卡日历 - ICT刷题系统{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>📅 {{ year }}年{{ month }}月 打卡日历</h1>
+</div>
+
+<!-- 月份切换 -->
+<div class="month-nav">
+    {% set prev_month = month - 1 if month > 1 else 12 %}
+    {% set prev_year = year if month > 1 else year - 1 %}
+    {% set next_month = month + 1 if month < 12 else 1 %}
+    {% set next_year = year if month < 12 else year + 1 %}
+    <a href="/calendar?year={{ prev_year }}&month={{ prev_month }}" class="btn btn-secondary">⬅️ 上一月</a>
+    <span class="current-month">{{ year }}年{{ month }}月</span>
+    <a href="/calendar?year={{ next_year }}&month={{ next_month }}" class="btn btn-secondary">下一月 ➡️</a>
+</div>
+
+<!-- 月度收获 -->
+<div class="harvest-card">
+    <h2>🎁 本月收获</h2>
+    <div class="harvest-stats">
+        <div class="harvest-item">
+            <div class="harvest-value">{{ harvest.total_questions }}</div>
+            <div class="harvest-label">答题总数</div>
+        </div>
+        <div class="harvest-item">
+            <div class="harvest-value">{{ harvest.correct_questions }}</div>
+            <div class="harvest-label">正确数</div>
+        </div>
+        <div class="harvest-item">
+            <div class="harvest-value">{{ "%.1f"|format(harvest.accuracy) }}%</div>
+            <div class="harvest-label">正确率</div>
+        </div>
+        <div class="harvest-item">
+            <div class="harvest-value">{{ harvest.active_days }}</div>
+            <div class="harvest-label">活跃天数</div>
+        </div>
+    </div>
+</div>
+
+<!-- 日历热力图 -->
+<div class="chart-container">
+    <div id="calendarChart" style="height: 250px;"></div>
+</div>
+
+<!-- 每日详情列表 -->
+<div class="daily-list">
+    <h3>📋 每日详情</h3>
+    {% if harvest.daily_data %}
+    <table class="daily-table">
+        <thead>
+            <tr>
+                <th>日期</th>
+                <th>答题数</th>
+                <th>正确数</th>
+                <th>正确率</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in harvest.daily_data %}
+            <tr>
+                <td>{{ d.date }}</td>
+                <td>{{ d.total }}</td>
+                <td>{{ d.correct }}</td>
+                <td>
+                    <span class="accuracy-badge {% if d.correct/d.total >= 0.8 %}high{% elif d.correct/d.total >= 0.6 %}mid{% else %}low{% endif %}">
+                        {{ "%.0f"|format(d.correct/d.total*100) }}%
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="empty-text">本月暂无答题记录</p>
+    {% endif %}
+</div>
+
+<!-- 各考点掌握情况 -->
+{% if harvest.by_category %}
+<div class="chart-container">
+    <h3>🎯 本月各考点掌握情况</h3>
+    <div id="monthCategoryChart" style="height: 300px;"></div>
+</div>
+{% endif %}
+
+<script>
+const checkInData = {{ check_ins|tojson }};
+const dailyData = {{ harvest.daily_data|tojson }};
+const categoryData = {{ harvest.by_category|tojson }};
+const year = {{ year }};
+const month = {{ month }};
+
+// 日历热力图
+const calendarChart = echarts.init(document.getElementById('calendarChart'));
+
+// 构建日历数据
+const calendarData = dailyData.map(d => [d.date, d.total]);
+
+calendarChart.setOption({
+    tooltip: {
+        formatter: function(params) {
+            const date = params.value[0];
+            const total = params.value[1];
+            const dayData = dailyData.find(d => d.date === date);
+            if (dayData) {
+                return `${date}<br/>答题: ${dayData.total}<br/>正确: ${dayData.correct}<br/>正确率: ${(dayData.correct/dayData.total*100).toFixed(0)}%`;
+            }
+            return `${date}<br/>未答题`;
+        }
+    },
+    visualMap: {
+        min: 0,
+        max: 50,
+        calculable: true,
+        orient: 'horizontal',
+        left: 'center',
+        bottom: 0,
+        inRange: {
+            color: ['#ebedf0', '#c6e48b', '#7bc96f', '#239a3b', '#196127']
+        }
+    },
+    calendar: {
+        range: `${year}-${String(month).padStart(2, '0')}`,
+        cellSize: ['auto', 20],
+        dateFormatter: function(date) {
+            return date.getDate();
+        },
+        dayLabel: {
+            nameMap: ['日', '一', '二', '三', '四', '五', '六']
+        },
+        monthLabel: {
+            nameMap: ['1月', '2月', '3月', '4月', '5月', '6月', 
+                      '7月', '8月', '9月', '10月', '11月', '12月']
+        }
+    },
+    series: {
+        type: 'heatmap',
+        coordinateSystem: 'calendar',
+        data: calendarData
+    }
+});
+
+// 各考点柱状图
+{% if harvest.by_category %}
+const monthCategoryChart = echarts.init(document.getElementById('monthCategoryChart'));
+monthCategoryChart.setOption({
+    tooltip: { trigger: 'axis' },
+    legend: { data: ['总题数', '正确数'] },
+    xAxis: {
+        type: 'category',
+        data: categoryData.map(c => c.category)
+    },
+    yAxis: { type: 'value' },
+    series: [
+        {
+            name: '总题数',
+            type: 'bar',
+            data: categoryData.map(c => c.total),
+            itemStyle: { color: '#409EFF' }
+        },
+        {
+            name: '正确数',
+            type: 'bar',
+            data: categoryData.map(c => c.correct),
+            itemStyle: { color: '#67C23A' }
+        }
+    ]
+});
+
+window.addEventListener('resize', () => {
+    monthCategoryChart.resize();
+});
+{% endif %}
+
+window.addEventListener('resize', () => {
+    calendarChart.resize();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,1118 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    background: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* ============ 导航栏 ============ */
+.navbar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.nav-logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    padding: 15px 0;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 5px;
+}
+
+.nav-menu a {
+    color: white;
+    text-decoration: none;
+    padding: 15px 15px;
+    display: block;
+    transition: background 0.3s;
+    border-radius: 4px;
+}
+
+.nav-menu a:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* ============ 容器 ============ */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+/* ============ 首页 Hero ============ */
+.hero {
+    text-align: center;
+    padding: 40px 20px;
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+.hero h1 {
+    font-size: 32px;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    color: #666;
+    font-size: 16px;
+}
+
+/* ============ 统计卡片 ============ */
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    padding: 25px 15px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 14px;
+}
+
+/* ============ 章节 ============ */
+.section {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+.section h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 22px;
+}
+
+/* ============ 快速开始 ============ */
+.quick-start {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.quick-card {
+    padding: 25px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.quick-card:hover {
+    border-color: #667eea;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+}
+
+.quick-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.quick-card h3 {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.quick-card p {
+    color: #999;
+    font-size: 14px;
+}
+
+/* ============ 分类网格 ============ */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.category-card {
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.category-card:hover {
+    transform: scale(1.05);
+}
+
+.category-card h3 {
+    margin-bottom: 5px;
+}
+
+.category-card p {
+    opacity: 0.9;
+    font-size: 14px;
+}
+
+/* ============ 自定义表单 ============ */
+.custom-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-end;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-row label {
+    font-weight: 500;
+    color: #555;
+}
+
+.form-row select {
+    padding: 10px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    min-width: 180px;
+    transition: border-color 0.3s;
+}
+
+.form-row select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* ============ 按钮 ============ */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #d0d0d0;
+}
+
+.btn-favorite {
+    background: #ffd700;
+    color: #333;
+}
+
+.btn-favorite:hover {
+    background: #ffcc00;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+/* ============ 刷题页面 ============ */
+.quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+.quiz-info {
+    display: flex;
+    gap: 20px;
+    color: #666;
+    font-size: 14px;
+}
+
+.quiz-progress {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* ============ 题目卡片 ============ */
+.question-card {
+    background: white;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+.question-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.q-category {
+    background: #e8f0fe;
+    color: #667eea;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.q-number {
+    color: #999;
+    font-size: 14px;
+}
+
+.question-content {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+/* ============ 选项 ============ */
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: white;
+}
+
+.option:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.option.selected {
+    border-color: #667eea;
+    background: #e8f0fe;
+}
+
+.option.correct {
+    border-color: #67c23a;
+    background: #f0f9eb;
+}
+
+.option.wrong {
+    border-color: #f56c6c;
+    background: #fef0f0;
+}
+
+.option-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    color: #666;
+    font-weight: bold;
+    margin-right: 15px;
+    flex-shrink: 0;
+    transition: all 0.3s;
+}
+
+.option.selected .option-label {
+    background: #667eea;
+    color: white;
+}
+
+.option.correct .option-label {
+    background: #67c23a;
+    color: white;
+}
+
+.option.wrong .option-label {
+    background: #f56c6c;
+    color: white;
+}
+
+.option-text {
+    font-size: 15px;
+    color: #333;
+    flex: 1;
+}
+
+/* ============ 答案面板 ============ */
+.answer-panel {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-badge {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.result-badge.correct {
+    color: #67c23a;
+}
+
+.result-badge.wrong {
+    color: #f56c6c;
+}
+
+.correct-answer {
+    margin-bottom: 15px;
+    font-size: 15px;
+}
+
+.correct-answer span {
+    color: #67c23a;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.explanation {
+    padding-top: 15px;
+    border-top: 1px dashed #ddd;
+}
+
+.explanation strong {
+    color: #667eea;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.explanation p {
+    color: #555;
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+/* ============ 刷题操作按钮 ============ */
+.quiz-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.quiz-actions .btn {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+}
+
+/* ============ 刷题汇总 ============ */
+.quiz-summary {
+    background: white;
+    padding: 50px 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.quiz-summary h2 {
+    font-size: 28px;
+    color: #667eea;
+    margin-bottom: 30px;
+}
+
+.summary-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.summary-item {
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    border-radius: 10px;
+}
+
+.summary-value {
+    font-size: 36px;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.summary-label {
+    color: #666;
+    font-size: 14px;
+}
+
+.summary-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ============ 空状态 ============ */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+.empty-state h2 {
+    font-size: 24px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.empty-state p {
+    color: #999;
+    margin-bottom: 25px;
+}
+
+/* ============ 页面头部 ============ */
+.page-header {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+.page-header h1 {
+    font-size: 26px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.page-header p {
+    color: #999;
+    font-size: 14px;
+}
+
+/* ============ 操作栏 ============ */
+.action-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+/* ============ 题目列表 ============ */
+.question-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.question-item {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    transition: transform 0.3s;
+}
+
+.question-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.question-item-header {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-category {
+    background: #e8f0fe;
+    color: #667eea;
+}
+
+.badge-wrong {
+    background: #fef0f0;
+    color: #f56c6c;
+}
+
+.badge-streak {
+    background: #f0f9eb;
+    color: #67c23a;
+}
+
+.badge-tag {
+    background: #fff9e6;
+    color: #e6a23c;
+}
+
+.badge-time {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.question-item-content {
+    margin-bottom: 15px;
+}
+
+.question-item-content p {
+    margin-bottom: 10px;
+    line-height: 1.7;
+}
+
+.options-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 10px 0;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #555;
+}
+
+.correct {
+    color: #67c23a;
+    font-weight: bold;
+}
+
+details {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+details summary {
+    cursor: pointer;
+    color: #667eea;
+    font-weight: 500;
+    user-select: none;
+}
+
+details p {
+    margin-top: 10px;
+    color: #555;
+    line-height: 1.7;
+    font-size: 14px;
+}
+
+.question-item-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* ============ 图表容器 ============ */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.chart-container {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+}
+
+.chart-container h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 18px;
+}
+
+/* ============ 月份导航 ============ */
+.month-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+.current-month {
+    font-size: 18px;
+    font-weight: bold;
+    color: #667eea;
+    min-width: 150px;
+    text-align: center;
+}
+
+/* ============ 月度收获 ============ */
+.harvest-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+}
+
+.harvest-card h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.harvest-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+}
+
+.harvest-item {
+    text-align: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.harvest-value {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.harvest-label {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* ============ 每日列表 ============ */
+.daily-list {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+}
+
+.daily-list h3 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.daily-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.daily-table th,
+.daily-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.daily-table th {
+    background: #f8f9fa;
+    color: #666;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.daily-table td {
+    color: #333;
+    font-size: 14px;
+}
+
+.daily-table tr:hover {
+    background: #f8f9fa;
+}
+
+.accuracy-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.accuracy-badge.high {
+    background: #f0f9eb;
+    color: #67c23a;
+}
+
+.accuracy-badge.mid {
+    background: #fff9e6;
+    color: #e6a23c;
+}
+
+.accuracy-badge.low {
+    background: #fef0f0;
+    color: #f56c6c;
+}
+
+.empty-text {
+    text-align: center;
+    color: #999;
+    padding: 30px;
+}
+
+/* ============ 弹窗 ============ */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    animation: modalIn 0.3s ease;
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-content h2 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.modal-content p {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.modal-content code {
+    background: #f0f0f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #e83e8c;
+}
+
+.modal-content input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.modal-content input[type="file"]:hover {
+    border-color: #667eea;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 28px;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close:hover {
+    color: #333;
+}
+
+#uploadResult {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* ============ 响应式 ============ */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .nav-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2px;
+    }
+
+    .nav-menu a {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    .container {
+        padding: 15px 10px;
+    }
+
+    .hero h1 {
+        font-size: 24px;
+    }
+
+    .stats-overview {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 15px 10px;
+    }
+
+    .stat-value {
+        font-size: 24px;
+    }
+
+    .section {
+        padding: 20px 15px;
+    }
+
+    .quick-start {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .question-card {
+        padding: 20px 15px;
+    }
+
+    .question-content {
+        font-size: 16px;
+    }
+
+    .option {
+        padding: 12px 15px;
+    }
+
+    .quiz-actions {
+        flex-direction: column;
+    }
+
+    .quiz-actions .btn {
+        width: 100%;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .harvest-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .summary-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .daily-table {
+        font-size: 12px;
+    }
+
+    .daily-table th,
+    .daily-table td {
+        padding: 8px 10px;
+    }
+}
+
+
+/* ============ PWA / 移动端优化 ============ */
+@media (max-width: 768px) {
+    .navbar {
+        position: sticky;
+        top: 0;
+    }
+
+    .nav-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+        font-size: 12px;
+    }
+
+    .nav-menu a {
+        padding: 8px 10px;
+    }
+
+    .container {
+        padding: 15px 10px;
+    }
+
+    .question-content {
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    .option {
+        padding: 14px 12px;
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 12px 20px;
+        font-size: 14px;
+        min-height: 44px;  /* Apple 推荐的最小触摸尺寸 */
+    }
+
+    .stats-overview {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .chart-container {
+        padding: 15px;
+    }
+
+    .chart-container h3 {
+        font-size: 15px;
+    }
+
+    /* 表格在手机上可横向滚动 */
+    .daily-table-wrapper {
+        overflow-x: auto;
+    }
+}
+
+/* PWA 独立模式下的额外样式 */
+@media (display-mode: standalone) {
+    .navbar {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    /* 隐藏"添加到主屏幕"提示 */
+    .install-prompt {
+        display: none !important;
+    }
+}

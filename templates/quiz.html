@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}刷题 - ICT刷题系统{% endblock %}
+
+{% block content %}
+<div class="quiz-header">
+    <div class="quiz-info">
+        <span>模式: 
+            {% if mode == 'wrong' %}❌ 错题重做
+            {% elif mode == 'favorite' %}⭐ 收藏重做
+            {% else %}🎲 随机刷题{% endif %}
+        </span>
+        {% if category and category != '全部' %}
+        <span>考点: {{ category }}</span>
+        {% endif %}
+    </div>
+    <div class="quiz-progress">
+        <span id="progressText">0 / {{ questions|length }}</span>
+    </div>
+</div>
+
+{% if questions %}
+<div id="quizContainer" 
+     data-mode="{{ mode }}" 
+     data-questions='{{ questions|tojson }}'>
+    
+    <div class="question-card" id="questionCard">
+        <div class="question-meta">
+            <span class="q-category" id="qCategory"></span>
+            <span class="q-number" id="qNumber"></span>
+        </div>
+        
+        <div class="question-content" id="qContent"></div>
+        
+        <div class="options" id="optionsContainer"></div>
+        
+        <div class="answer-panel" id="answerPanel" style="display:none;">
+            <div class="result-badge" id="resultBadge"></div>
+            <div class="correct-answer">
+                <strong>正确答案：</strong><span id="correctAnswer"></span>
+            </div>
+            <div class="explanation">
+                <strong>📖 解析：</strong>
+                <p id="explanationText"></p>
+            </div>
+        </div>
+        
+        <div class="quiz-actions">
+            <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()">⬅️ 上一题</button>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()">提交答案</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="display:none;">下一题 ➡️</button>
+            <button class="btn btn-favorite" id="favBtn" onclick="toggleFavorite()">⭐ 收藏</button>
+        </div>
+    </div>
+</div>
+
+<!-- 结果汇总 -->
+<div class="quiz-summary" id="quizSummary" style="display:none;">
+    <h2>🎉 本轮刷题完成！</h2>
+    <div class="summary-stats">
+        <div class="summary-item">
+            <div class="summary-value" id="summaryTotal">0</div>
+            <div class="summary-label">总题数</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-value" id="summaryCorrect">0</div>
+            <div class="summary-label">正确</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-value" id="summaryWrong">0</div>
+            <div class="summary-label">错误</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-value" id="summaryAccuracy">0%</div>
+            <div class="summary-label">正确率</div>
+        </div>
+    </div>
+    <div class="summary-actions">
+        <a href="/quiz?mode=random&count=20" class="btn btn-primary">再来一轮</a>
+        <a href="/wrong" class="btn btn-secondary">查看错题</a>
+        <a href="/" class="btn btn-secondary">返回首页</a>
+    </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <h2>😢 暂无题目</h2>
+    <p>请先导入题库或检查分类</p>
+    <a href="/" class="btn btn-primary">返回首页</a>
+</div>
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+{% endblock %}
